@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login – School Feedback System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+        --bg: #0F1117;
+        --surface: #1A1D27;
+        --border: rgba(255,255,255,0.07);
+        --border-focus: rgba(139,92,246,0.55);
+        --purple: #8B5CF6;
+        --purple-soft: rgba(139,92,246,0.12);
+        --purple-hover: rgba(139,92,246,0.85);
+        --teal: #2DD4BF;
+        --text: #F1F0FF;
+        --text-muted: rgba(241,240,255,0.42);
+        --text-sub: rgba(241,240,255,0.62);
+        --input-bg: rgba(255,255,255,0.04);
+    }
+
+    body {
+        min-height: 100vh;
+        background: var(--bg);
+        font-family: "Inter", sans-serif;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* ── SLIDESHOW BACKGROUND ── */
+    .background-slideshow {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+    }
+
+    .background-slideshow img {
+        position: absolute;
+        inset: 0;
+        width: 100%; height: 100%;
+        object-fit: cover;
+        opacity: 0;
+        transition: opacity 1.4s ease-in-out;
+        filter: blur(2px) brightness(0.35) saturate(0.6);
+    }
+
+    .background-slideshow img.active { opacity: 1; }
+
+    /* ── OVERLAY (subtle purple tint) ── */
+    .overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        background: linear-gradient(
+            135deg,
+            rgba(15,17,23,0.7) 0%,
+            rgba(139,92,246,0.12) 50%,
+            rgba(15,17,23,0.75) 100%
+        );
+    }
+
+    /* ── AMBIENT GLOW ── */
+    .glow-top {
+        position: fixed; top: -200px; left: 50%;
+        transform: translateX(-50%);
+        width: 700px; height: 500px;
+        background: radial-gradient(ellipse, rgba(139,92,246,0.18) 0%, transparent 65%);
+        pointer-events: none; z-index: 2;
+    }
+    .glow-bottom {
+        position: fixed; bottom: -180px; right: -100px;
+        width: 500px; height: 400px;
+        background: radial-gradient(ellipse, rgba(45,212,191,0.13) 0%, transparent 65%);
+        pointer-events: none; z-index: 2;
+    }
+
+    /* ── LOGIN CARD ── */
+    .login-card {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        width: min(92%, 860px);
+        min-height: 480px;
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        box-shadow: 0 32px 80px rgba(0,0,0,0.55);
+        animation: fadeUp 0.5s ease both;
+    }
+
+    /* ── LEFT PANEL ── */
+    .left {
+        flex: 1.1;
+        background: linear-gradient(145deg, rgba(139,92,246,0.18), rgba(45,212,191,0.08));
+        border-right: 1px solid var(--border);
+        padding: 52px 44px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* decorative ring */
+    .left::before {
+        content: "";
+        position: absolute;
+        bottom: -80px; left: -80px;
+        width: 300px; height: 300px;
+        border-radius: 50%;
+        border: 1px solid rgba(139,92,246,0.18);
+    }
+    .left::after {
+        content: "";
+        position: absolute;
+        bottom: -120px; left: -120px;
+        width: 420px; height: 420px;
+        border-radius: 50%;
+        border: 1px solid rgba(45,212,191,0.1);
+    }
+
+    .left-top { position: relative; z-index: 1; }
+
+    .school-badge {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 5px 14px; border-radius: 100px;
+        background: var(--purple-soft);
+        border: 1px solid rgba(139,92,246,0.3);
+        font-size: 11px; font-weight: 600;
+        color: #C4B5FD; letter-spacing: 0.5px;
+        text-transform: uppercase; margin-bottom: 24px;
+    }
+
+    .left h1 {
+        font-size: clamp(17px, 2vw, 22px);
+        font-weight: 700; line-height: 1.35;
+        letter-spacing: -0.2px;
+        margin-bottom: 14px;
+    }
+
+    .left h1 em {
+        font-style: normal;
+        background: linear-gradient(90deg, #A78BFA, var(--teal));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .left p {
+        font-size: 14px; color: var(--text-sub); font-weight: 400; line-height: 1.6;
+    }
+
+    .left-bottom {
+        position: relative; z-index: 1;
+    }
+
+    .feature-list {
+        display: flex; flex-direction: column; gap: 12px;
+    }
+
+    .feature-item {
+        display: flex; align-items: center; gap: 10px;
+        font-size: 13px; color: var(--text-sub);
+    }
+
+    .feature-dot {
+        width: 28px; height: 28px; border-radius: 8px;
+        background: var(--purple-soft);
+        border: 1px solid rgba(139,92,246,0.2);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 13px; flex-shrink: 0;
+    }
+
+    /* ── RIGHT PANEL ── */
+    .right {
+        flex: 1;
+        background: var(--surface);
+        padding: 52px 44px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .right-logo {
+        width: 44px; height: 44px; border-radius: 12px;
+        background: linear-gradient(135deg, var(--purple), var(--teal));
+        display: flex; align-items: center; justify-content: center;
+        font-size: 20px; margin-bottom: 28px;
+    }
+
+    .right h2 {
+        font-size: 24px; font-weight: 700; letter-spacing: -0.3px;
+        margin-bottom: 6px;
+    }
+
+    .right .subtitle {
+        font-size: 13.5px; color: var(--text-muted);
+        margin-bottom: 32px;
+    }
+
+    /* FORM */
+    .field {
+        display: flex; flex-direction: column; gap: 6px;
+        margin-bottom: 16px;
+    }
+
+    .field label {
+        font-size: 12px; font-weight: 600; color: var(--text-sub);
+        letter-spacing: 0.3px; text-transform: uppercase;
+    }
+
+    .input-wrap {
+        position: relative; display: flex; align-items: center;
+    }
+
+    .input-icon {
+        position: absolute; left: 13px;
+        color: var(--text-muted); pointer-events: none;
+        display: flex; align-items: center;
+    }
+    .input-icon svg { width: 15px; height: 15px; }
+
+    .field input {
+        width: 100%;
+        padding: 11px 14px 11px 40px;
+        background: var(--input-bg);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        color: var(--text);
+        font-family: inherit; font-size: 14px;
+        outline: none;
+        transition: border-color 0.2s, background 0.2s;
+    }
+
+    .field input::placeholder { color: var(--text-muted); }
+
+    .field input:focus {
+        border-color: var(--border-focus);
+        background: rgba(139,92,246,0.06);
+    }
+
+    .field input:focus-visible { box-shadow: 0 0 0 3px rgba(139,92,246,0.18); }
+
+    /* SUBMIT BUTTON */
+    .submit-btn {
+        width: 100%; margin-top: 8px;
+        padding: 13px;
+        border: none; border-radius: 10px;
+        background: linear-gradient(135deg, var(--purple), #6D28D9);
+        color: white; font-family: inherit;
+        font-size: 15px; font-weight: 600;
+        cursor: pointer; letter-spacing: 0.2px;
+        transition: opacity 0.2s, transform 0.15s;
+        position: relative; overflow: hidden;
+    }
+
+    .submit-btn::after {
+        content: "";
+        position: absolute; inset: 0;
+        background: linear-gradient(135deg, var(--teal), var(--purple));
+        opacity: 0; transition: opacity 0.35s;
+    }
+
+    .submit-btn:hover::after { opacity: 1; }
+
+    .submit-btn span { position: relative; z-index: 1; }
+
+    .submit-btn:hover { transform: translateY(-1px); }
+    .submit-btn:active { transform: scale(0.99); }
+    .submit-btn:focus-visible { outline: 2px solid var(--purple); outline-offset: 3px; }
+
+    /* FOOTER NOTE */
+    .footer-note {
+        margin-top: 24px; text-align: center;
+        font-size: 12px; color: var(--text-muted);
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 660px) {
+        .left { display: none; }
+        .login-card { min-height: unset; }
+        .right { padding: 40px 28px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+    </style>
+</head>
+<body>
+
+<!-- SLIDESHOW BACKGROUND -->
+<div class="background-slideshow">
+    <img class="active" src="{{ url_for('static', filename='images/school1.jpg') }}" alt="">
+    <img src="{{ url_for('static', filename='images/school2.jpg') }}" alt="">
+    <img src="{{ url_for('static', filename='images/school3.jpg') }}" alt="">
+</div>
+
+<!-- OVERLAY -->
+<div class="overlay"></div>
+
+<!-- AMBIENT GLOWS -->
+<div class="glow-top"></div>
+<div class="glow-bottom"></div>
+
+<!-- LOGIN CARD -->
+<div class="login-card">
+
+    <!-- LEFT INFO PANEL -->
+    <div class="left">
+        <div class="left-top">
+            <div class="school-badge">🏫 Est. Since</div>
+            <h1>S.H.N <em>Ethel Harvey</em> Higher Secondary School</h1>
+            <p>Welcome to the Student Feedback System. Sign in to access your dashboard and analytics.</p>
+        </div>
+
+        <div class="left-bottom">
+            <div class="feature-list">
+                <div class="feature-item">
+                    <div class="feature-dot">📊</div>
+                    <span>Real-time feedback analytics</span>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-dot">🔒</div>
+                    <span>Secure role-based access</span>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-dot">📚</div>
+                    <span>Class-wise performance tracking</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT FORM PANEL -->
+    <div class="right">
+        <div class="right-logo">🎓</div>
+        <h2>Welcome back</h2>
+        <p class="subtitle">Sign in to your account to continue</p>
+
+        <form method="post" novalidate>
+
+            <div class="field">
+                <label for="username">Username</label>
+                <div class="input-wrap">
+                    <span class="input-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                    </span>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" required autocomplete="username">
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="password">Password</label>
+                <div class="input-wrap">
+                    <span class="input-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
+                    </span>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password">
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                <span>Sign In →</span>
+            </button>
+
+        </form>
+
+        <p class="footer-note">Student Feedback System &bull; S.H.N Ethel Harvey HSS</p>
+    </div>
+
+</div>
+
+<script>
+    // slideshow
+    const imgs = document.querySelectorAll('.background-slideshow img');
+    let cur = 0;
+    setInterval(() => {
+        imgs[cur].classList.remove('active');
+        cur = (cur + 1) % imgs.length;
+        imgs[cur].classList.add('active');
+    }, 4500);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,135 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", sans-serif;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* SLIDESHOW */
+.background-slideshow {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+}
+
+.background-slideshow img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    animation: slideShow 15s infinite;
+}
+
+.background-slideshow img:nth-child(1) { animation-delay: 0s; }
+.background-slideshow img:nth-child(2) { animation-delay: 5s; }
+.background-slideshow img:nth-child(3) { animation-delay: 10s; }
+
+@keyframes slideShow {
+    0% { opacity: 0; transform: scale(1.1); }
+    10% { opacity: 1; }
+    30% { opacity: 1; }
+    40% { opacity: 0; }
+    100% { opacity: 0; }
+}
+
+/* DARK OVERLAY */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(6px);
+    z-index: -1;
+}
+
+/* LOGIN CARD */
+.login-card {
+    width: 850px;
+    height: 380px;
+    display: flex;
+    border-radius: 15px;
+    overflow: hidden;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    animation: fadeIn 1s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* LEFT PANEL */
+.left {
+    width: 50%;
+    background: rgba(0,0,0,0.75);
+    color: white;
+    padding: 50px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.left h1 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    line-height: 1.3;
+}
+
+.left p {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+/* RIGHT PANEL */
+.right {
+    width: 50%;
+    background: linear-gradient(135deg, #cc1d43, #e01458);
+    padding: 50px 30px;
+    color: white;
+}
+
+.right h2 {
+    margin-bottom: 20px;
+}
+
+/* INPUT */
+.right input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 8px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.right input:focus {
+    transform: scale(1.03);
+}
+
+/* BUTTON */
+.right button {
+    width: 100%;
+    padding: 12px;
+    background: white;
+    color: #ff4d1a;
+    font-weight: bold;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.right button:hover {
+    background: black;
+    color: white;
+    transform: scale(1.05);
+}

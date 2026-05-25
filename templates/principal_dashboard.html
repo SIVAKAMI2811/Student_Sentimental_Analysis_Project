@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Principal Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+        --bg: #0F1117;
+        --surface: #1A1D27;
+        --surface2: #21253A;
+        --border: rgba(255,255,255,0.07);
+        --border-hover: rgba(139,92,246,0.45);
+        --purple: #8B5CF6;
+        --purple-soft: rgba(139,92,246,0.12);
+        --teal: #2DD4BF;
+        --text: #F1F0FF;
+        --text-muted: rgba(241,240,255,0.42);
+        --text-sub: rgba(241,240,255,0.62);
+        --green: #34D399;
+        --red: #F87171;
+        --amber: #FBBF24;
+    }
+
+    body {
+        min-height: 100vh;
+        background: var(--bg);
+        font-family: "Inter", sans-serif;
+        color: var(--text);
+        display: flex; flex-direction: column; align-items: center;
+        padding-bottom: 80px;
+        overflow-x: hidden;
+    }
+
+    .glow {
+        position: fixed; top: -200px; left: 50%;
+        transform: translateX(-50%);
+        width: 800px; height: 500px;
+        background: radial-gradient(ellipse, rgba(139,92,246,0.16) 0%, transparent 65%);
+        pointer-events: none; z-index: 0;
+    }
+    .glow-teal {
+        position: fixed; bottom: -150px; right: -100px;
+        width: 500px; height: 400px;
+        background: radial-gradient(ellipse, rgba(45,212,191,0.1) 0%, transparent 65%);
+        pointer-events: none; z-index: 0;
+    }
+
+    /* HEADER */
+    header {
+        width: 100%; height: 64px;
+        padding: 0 40px;
+        display: flex; justify-content: space-between; align-items: center;
+        border-bottom: 1px solid var(--border);
+        background: rgba(15,17,23,0.85);
+        backdrop-filter: blur(20px);
+        position: sticky; top: 0; z-index: 100;
+    }
+
+    .brand { display: flex; align-items: center; gap: 10px; }
+
+    .brand-logo {
+        width: 34px; height: 34px; border-radius: 9px;
+        background: linear-gradient(135deg, var(--purple), var(--teal));
+        display: flex; align-items: center; justify-content: center; font-size: 16px;
+    }
+
+    .brand-name { font-size: 15px; font-weight: 600; }
+    .brand-sub  { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+
+    .header-right { display: flex; align-items: center; gap: 10px; }
+
+    .class-badge {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 6px 14px; border-radius: 100px;
+        background: var(--purple-soft);
+        border: 1px solid rgba(139,92,246,0.3);
+        font-size: 13px; font-weight: 600; color: #C4B5FD;
+    }
+
+    .back-btn {
+        display: inline-flex; align-items: center; gap: 7px;
+        padding: 7px 16px; border-radius: 8px;
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.04);
+        color: var(--text-sub); font-family: inherit;
+        font-size: 13px; font-weight: 500; cursor: pointer;
+        transition: all 0.2s;
+    }
+    .back-btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); color: var(--text); }
+    .back-btn:focus-visible { outline: 2px solid var(--purple); outline-offset: 3px; }
+
+    /* HERO */
+    .hero {
+        margin-top: 48px; text-align: center; padding: 0 24px;
+        z-index: 1; animation: fadeUp 0.45s ease both;
+    }
+
+    .hero-label {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 4px 14px; border-radius: 100px;
+        background: var(--purple-soft); border: 1px solid rgba(139,92,246,0.3);
+        font-size: 11.5px; font-weight: 600; color: #C4B5FD;
+        letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 16px;
+    }
+
+    .hero h1 {
+        font-size: clamp(24px, 4vw, 36px);
+        font-weight: 700; letter-spacing: -0.4px; margin-bottom: 8px;
+    }
+
+    .hero h1 em {
+        font-style: normal;
+        background: linear-gradient(90deg, #A78BFA, var(--teal));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .hero p { font-size: 14px; color: var(--text-sub); }
+
+    /* STATS */
+    .stats-row {
+        margin-top: 28px; display: flex; gap: 12px;
+        width: min(92%, 900px); z-index: 1;
+        animation: fadeUp 0.45s 0.08s ease both;
+    }
+
+    .stat-card {
+        flex: 1; background: var(--surface);
+        border: 1px solid var(--border); border-radius: 12px;
+        padding: 16px 20px; display: flex; align-items: center; gap: 14px;
+    }
+
+    .stat-icon {
+        width: 38px; height: 38px; border-radius: 10px;
+        display: flex; align-items: center; justify-content: center; font-size: 17px;
+    }
+    .si-purple { background: rgba(139,92,246,0.14); }
+    .si-teal   { background: rgba(45,212,191,0.12); }
+    .si-green  { background: rgba(52,211,153,0.12); }
+    .si-red    { background: rgba(248,113,113,0.12); }
+    .si-amber  { background: rgba(251,191,36,0.12); }
+
+    .stat-label { font-size: 11px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-val   { font-size: 22px; font-weight: 700; margin-top: 2px; }
+
+    /* CHART CARD */
+    .chart-card {
+        margin-top: 28px;
+        width: min(92%, 900px);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px; padding: 28px;
+        z-index: 1;
+        animation: fadeUp 0.45s 0.14s ease both;
+    }
+
+    .chart-header {
+        display: flex; align-items: flex-start; justify-content: space-between;
+        margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
+    }
+
+    .chart-header h3 { font-size: 15px; font-weight: 600; }
+    .chart-header p  { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+
+    .legend {
+        display: flex; gap: 16px; align-items: center;
+    }
+
+    .legend-item {
+        display: flex; align-items: center; gap: 6px;
+        font-size: 12px; color: var(--text-sub); font-weight: 500;
+    }
+
+    .legend-dot {
+        width: 10px; height: 10px; border-radius: 3px;
+    }
+
+    .hint {
+        font-size: 12px; color: var(--text-muted); text-align: center;
+        margin-top: 14px;
+    }
+
+    /* POPUP */
+    .popup-overlay {
+        display: none;
+        position: fixed; inset: 0;
+        background: rgba(0,0,0,0.65);
+        backdrop-filter: blur(6px);
+        justify-content: center; align-items: center;
+        z-index: 200;
+    }
+
+    .popup-overlay.open { display: flex; }
+
+    .popup-box {
+        background: var(--surface2);
+        border: 1px solid rgba(139,92,246,0.3);
+        border-radius: 20px;
+        padding: 36px 32px;
+        width: min(90%, 460px);
+        text-align: center;
+        position: relative;
+        box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+        animation: popIn 0.3s ease both;
+    }
+
+    .popup-icon {
+        width: 52px; height: 52px; border-radius: 14px;
+        background: var(--purple-soft);
+        border: 1px solid rgba(139,92,246,0.25);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 22px; margin: 0 auto 18px;
+    }
+
+    .popup-box h2 {
+        font-size: 18px; font-weight: 700; margin-bottom: 10px;
+    }
+
+    .popup-box h2 em {
+        font-style: normal;
+        background: linear-gradient(90deg, #A78BFA, var(--teal));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .popup-box p {
+        font-size: 14px; color: var(--text-sub);
+        line-height: 1.65; margin-bottom: 24px;
+    }
+
+    .popup-close {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 9px 22px; border-radius: 9px;
+        background: var(--purple-soft);
+        border: 1px solid rgba(139,92,246,0.3);
+        color: #C4B5FD; font-family: inherit;
+        font-size: 13px; font-weight: 600;
+        cursor: pointer; transition: all 0.2s;
+    }
+    .popup-close:hover { background: rgba(139,92,246,0.22); border-color: rgba(139,92,246,0.5); }
+
+    /* FOOTER */
+    footer {
+        position: fixed; bottom: 0; width: 100%;
+        padding: 12px 0; text-align: center;
+        font-size: 12px; color: var(--text-muted);
+        background: rgba(15,17,23,0.9);
+        backdrop-filter: blur(12px);
+        border-top: 1px solid var(--border);
+        z-index: 100;
+    }
+
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(14px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes popIn {
+        from { opacity: 0; transform: scale(0.94) translateY(12px); }
+        to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+        header { padding: 0 16px; }
+        .stats-row { flex-wrap: wrap; }
+        .stat-card { min-width: calc(50% - 6px); }
+        .chart-header { flex-direction: column; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+    </style>
+</head>
+<body>
+
+<div class="glow"></div>
+<div class="glow-teal"></div>
+
+<!-- HEADER -->
+<header role="banner">
+    <div class="brand">
+        <div class="brand-logo">🎓</div>
+        <div>
+            <div class="brand-name">Principal Dashboard</div>
+            <div class="brand-sub">Student Feedback System</div>
+        </div>
+    </div>
+    <div class="header-right">
+        <span class="class-badge">📚 Class: {{ class_name }}</span>
+        <button class="back-btn" onclick="window.location.href='/principal'">
+            ← Back
+        </button>
+    </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+    <div class="hero-label">📊 Analytics Overview</div>
+    <h1>Class <em>{{ class_name }}</em> Dashboard</h1>
+    <p>Subject-wise sentiment breakdown for all feedback</p>
+</div>
+
+<!-- STATS -->
+<div class="stats-row">
+    <div class="stat-card">
+        <div class="stat-icon si-purple">📚</div>
+        <div>
+            <div class="stat-label">Total Subjects</div>
+            <div class="stat-val">{{ data|length }}</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon si-teal">📝</div>
+        <div>
+            <div class="stat-label">Total Feedback</div>
+            <div class="stat-val">{{ total_feedback }}</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon si-green">😊</div>
+        <div>
+            <div class="stat-label">Positive</div>
+            <div class="stat-val" id="total-pos" style="color:var(--green)">—</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon si-red">😞</div>
+        <div>
+            <div class="stat-label">Negative</div>
+            <div class="stat-val" id="total-neg" style="color:var(--red)">—</div>
+        </div>
+    </div>
+</div>
+
+<!-- BAR CHART -->
+<div class="chart-card">
+    <div class="chart-header">
+        <div>
+            <h3>Subject-wise Sentiment Analysis</h3>
+            <p>Click on any bar to view AI summary for that subject</p>
+        </div>
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-dot" style="background:#34D399"></div> Positive
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background:#F87171"></div> Negative
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background:#FBBF24"></div> Neutral
+            </div>
+        </div>
+    </div>
+    <canvas id="mainChart" height="300"></canvas>
+    <p class="hint">💡 Click on a bar to view the AI-generated summary for that subject</p>
+</div>
+
+<!-- POPUP -->
+<div id="popup" class="popup-overlay" role="dialog" aria-modal="true" aria-labelledby="popupTitle">
+    <div class="popup-box">
+        <div class="popup-icon">🧠</div>
+        <h2 id="popupTitle"></h2>
+        <p id="popupSummary"></p>
+        <button class="popup-close" onclick="closePopup()">✕ Close</button>
+    </div>
+</div>
+
+<footer role="contentinfo">
+    Student Feedback System &bull; Principal Dashboard &bull; Class {{ class_name }}
+</footer>
+
+<script>
+const data     = {{ data | tojson }};
+const summaries = {{ summary | tojson }};
+
+const subjects = Object.keys(data);
+const positive = subjects.map(s => data[s]["Positive"] || 0);
+const negative = subjects.map(s => data[s]["Negative"] || 0);
+const neutral  = subjects.map(s => data[s]["Neutral"]  || 0);
+
+// populate stats
+document.getElementById("total-pos").textContent = positive.reduce((a,b) => a+b, 0);
+document.getElementById("total-neg").textContent = negative.reduce((a,b) => a+b, 0);
+
+const ctx = document.getElementById("mainChart");
+
+new Chart(ctx, {
+    type: "bar",
+    data: {
+        labels: subjects,
+        datasets: [
+            {
+                label: "Positive",
+                data: positive,
+                backgroundColor: "rgba(52,211,153,0.75)",
+                borderColor: "#34D399",
+                borderWidth: 1.5,
+                borderRadius: 6,
+                borderSkipped: false,
+                hoverBackgroundColor: "rgba(52,211,153,0.95)"
+            },
+            {
+                label: "Negative",
+                data: negative,
+                backgroundColor: "rgba(248,113,113,0.75)",
+                borderColor: "#F87171",
+                borderWidth: 1.5,
+                borderRadius: 6,
+                borderSkipped: false,
+                hoverBackgroundColor: "rgba(248,113,113,0.95)"
+            },
+            {
+                label: "Neutral",
+                data: neutral,
+                backgroundColor: "rgba(251,191,36,0.75)",
+                borderColor: "#FBBF24",
+                borderWidth: 1.5,
+                borderRadius: 6,
+                borderSkipped: false,
+                hoverBackgroundColor: "rgba(251,191,36,0.95)"
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        animation: { duration: 900, easing: "easeOutQuart" },
+        interaction: { mode: "index", intersect: false },
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                backgroundColor: "#21253A",
+                titleColor: "#F1F0FF",
+                bodyColor: "rgba(241,240,255,0.72)",
+                borderColor: "rgba(255,255,255,0.08)",
+                borderWidth: 1,
+                padding: 14,
+                cornerRadius: 10,
+                titleFont: { family: "Inter", weight: "600", size: 13 },
+                bodyFont: { family: "Inter", size: 13 },
+                callbacks: {
+                    title: function(items) { return "📘 " + items[0].label; },
+                    label: function(ctx) {
+                        const icons = { Positive: "😊", Negative: "😞", Neutral: "😐" };
+                        return `  ${icons[ctx.dataset.label] || ""} ${ctx.dataset.label}: ${ctx.raw}`;
+                    }
+                }
+            }
+        },
+        scales: {
+            x: {
+                grid: { color: "rgba(255,255,255,0.04)", lineWidth: 1 },
+                border: { color: "rgba(255,255,255,0.07)" },
+                ticks: {
+                    color: "rgba(241,240,255,0.55)",
+                    font: { family: "Inter", size: 12 },
+                    maxRotation: 30
+                }
+            },
+            y: {
+                beginAtZero: true,
+                grid: { color: "rgba(255,255,255,0.05)", lineWidth: 1 },
+                border: { color: "rgba(255,255,255,0.07)", dash: [4,4] },
+                ticks: {
+                    color: "rgba(241,240,255,0.5)",
+                    font: { family: "Inter", size: 12 },
+                    stepSize: 1,
+                    padding: 8
+                }
+            }
+        },
+        onClick: (e, elements) => {
+            if (elements.length > 0) {
+                const subject = subjects[elements[0].index];
+                showDetails(subject);
+            }
+        },
+        onHover: (e, elements) => {
+            e.native.target.style.cursor = elements.length > 0 ? "pointer" : "default";
+        }
+    }
+});
+
+function showDetails(subject) {
+    document.getElementById("popupTitle").innerHTML = `<em>${subject}</em> — AI Summary`;
+    document.getElementById("popupSummary").textContent = summaries[subject] || "No summary available.";
+    document.getElementById("popup").classList.add("open");
+}
+
+function closePopup() {
+    document.getElementById("popup").classList.remove("open");
+}
+
+document.getElementById("popup").addEventListener("click", function(e) {
+    if (e.target === this) closePopup();
+});
+
+document.addEventListener("keydown", function(e) {
+    if (e.key === "Escape") closePopup();
+});
+</script>
+
+</body>
+</html>

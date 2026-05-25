@@ -1,0 +1,138 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: "Segoe UI", sans-serif;
+}
+
+/* BODY */
+body{
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color:white;
+    min-height:100vh;
+}
+
+/* NAVBAR */
+nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 40px;
+    background: rgba(0,0,0,0.3);
+    backdrop-filter: blur(10px);
+    box-shadow:0 5px 20px rgba(0,0,0,0.3);
+}
+
+nav h2{
+    font-size:20px;
+    letter-spacing:1px;
+}
+
+nav button{
+    padding:10px 20px;
+    border:none;
+    border-radius:25px;
+    background:#ff6a2d;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+nav button:hover{
+    background:#ff3c00;
+    transform:scale(1.05);
+}
+
+/* HERO SECTION */
+.hero{
+    text-align:center;
+    margin-top:80px;
+}
+
+.hero h1{
+    font-size:40px;
+    margin-bottom:10px;
+}
+
+.hero p{
+    font-size:16px;
+    opacity:0.8;
+}
+
+/* FEEDBACK SECTION */
+.feedback{
+    width:50%;
+    margin:60px auto;
+    padding:30px;
+
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(12px);
+
+    border-radius:15px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.4);
+}
+
+.feedback h2{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+/* FIELDS */
+.field{
+    margin-bottom:20px;
+}
+
+.field label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:600;
+}
+
+.field textarea{
+    width:100%;
+    height:80px;
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    outline:none;
+    resize:none;
+
+    background: rgba(255,255,255,0.9);
+    color:#333;
+    font-size:14px;
+}
+
+/* BUTTON */
+.feedback button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:25px;
+    background:#00c853;
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.feedback button:hover{
+    background:#009624;
+    transform:scale(1.03);
+}
+
+/* THANK YOU */
+.thankyou{
+    text-align:center;
+    margin-top:100px;
+}
+
+.thankyou h1{
+    font-size:32px;
+}
+
+/* HIDDEN CLASS */
+.hidden{
+    display:none;
+}

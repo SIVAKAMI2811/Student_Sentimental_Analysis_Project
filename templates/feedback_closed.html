@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Feedback Submitted</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/success.css') }}">
+</head>
+<body>
+
+<div class="success-container">
+    <div class="success-box">
+        <div class="icon">✔</div>
+        <h2>Thank You, {{ name }}!</h2>
+        <p>Your feedback has been submitted successfully.</p>
+        <p>Thank you for sharing your valuable feedback.</p>
+        <p>Your response has been recorded.</p>
+        <p class="time">Submitted on: {{ time }}</p>
+        <a href="/" class="btn">Back to Login</a>
+    </div>
+</div>
+
+</body>
+</html>

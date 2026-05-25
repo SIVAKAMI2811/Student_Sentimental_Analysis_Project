@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Feedback Submitted</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/success.css') }}">
+    <script>
+        setTimeout(function(){
+            window.location.href = "/student";
+        }, 5000);
+    </script>
+</head>
+<body class="center-body">
+
+    <div class="card">
+        <div class="checkmark">✔</div>
+        <h2>Feedback Submitted Successfully</h2>
+        <p>Your responses have been securely recorded.</p>
+        <p>Thank you for contributing to academic improvement.</p>
+        <div class="status">Status: Completed</div>
+    </div>
+
+</body>
+</html>
